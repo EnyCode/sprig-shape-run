@@ -211,6 +211,8 @@ D000000000000000
 )
 
 const mapSprites = [spike, block, ping, floorSpike, smallSpike]
+const collision = [block, floorBlue]
+const playerSprites = [player, playerR, playerU, playerL]
 
 const levels = [
   map`
@@ -229,6 +231,10 @@ setMap(levels[0])
 
 setPushables({
   [ player ]: []
+})
+
+onInput("w", () => {
+  velocity = -1.5
 })
 
 afterInput(() => {
@@ -317,6 +323,27 @@ function moveMap() {
   })
 }
 
+function movePlayer() {
+  let player
+  for (let x = 0; x < playerSprites.length; x++) {
+    player = getFirst(playerSprites[x])
+    if (player) {
+      break
+    }
+  }
+
+  let newY = player.y + Math.round(velocity)
+  if (newY < 7) {
+    player.y = newY
+  }
+  if (velocity < 1) {
+    velocity += 0.5
+  }
+  
+  
+  setTimeout(movePlayer, 250)
+}
+
 function gameLoop() {
   moveMap()
   placeMap()
@@ -325,3 +352,4 @@ function gameLoop() {
 }
 
 gameLoop()
+movePlayer()
